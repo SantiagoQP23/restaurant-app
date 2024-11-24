@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restaurant_app/config/routes/app_router.dart';
 import 'package:restaurant_app/features/home/presentation/widgets/order_list.dart';
+import 'package:restaurant_app/features/orders/domain/entities/entities.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends ConsumerWidget {
   const OrdersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
         length: 5,
         child: Scaffold(
@@ -15,11 +18,11 @@ class OrdersScreen extends StatelessWidget {
               actions: const [Text('Online')],
               bottom: const TabBar(
                 tabs: [
-                  Tab(text: 'New'),
+                  Tab(text: 'All'),
+                  Tab(text: 'Pending'),
                   Tab(text: 'In progress'),
                   Tab(text: 'Delivered'),
                   Tab(text: 'Canceled'),
-                  Tab(text: 'History'),
                 ],
                 isScrollable: true,
                 tabAlignment: TabAlignment.center,
@@ -29,16 +32,17 @@ class OrdersScreen extends StatelessWidget {
             // drawer: const DrawerWidget(),
             body: TabBarView(
               children: [
-                OrderList(status: 'New'),
-                Icon(Icons.directions_transit),
-                Icon(Icons.directions_bike),
-                Icon(Icons.directions_bike),
-                Icon(Icons.directions_bike),
+                OrderList(),
+                OrderList(status: OrderStatus.pending,),
+                OrderList(status: OrderStatus.inProgress,),
+                OrderList(status: OrderStatus.delivered,),
+                OrderList(status: OrderStatus.cancelled,),
               ],
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                context.go('/cart');
+                // context.push('/cart');
+                ref.read(appRouterProvider).push('/cart');
                 // context.read<Counter>().increment();
               },
               tooltip: 'Añadir nuevo',

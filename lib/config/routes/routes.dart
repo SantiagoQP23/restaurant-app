@@ -21,6 +21,10 @@ class Routes {
   static const String cart = '/cart';
   static const String menu = '/menu';
   static const String product = '/product';
+  static const String login = '/login';
+  static const String bill = '/bill';
+  static const String checkout = '/checkout';
+  static const String tables = '/tables';
 }
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -65,7 +69,7 @@ Page getPage({
 
 GoRoute orderRoute = GoRoute(
     path: 'order',
-    builder: (context, state) => const OrderScreen(),
+    builder: (context, state) => const OrderScreen(id: '',),
     routes: [
       GoRoute(
           path: 'new-bill',

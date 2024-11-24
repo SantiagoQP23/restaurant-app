@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_app/config/constants/environment.dart';
+import 'package:restaurant_app/config/routes/app_router.dart';
 import 'package:restaurant_app/config/routes/custom_navigation_helper.dart';
 import 'package:restaurant_app/config/theme/theme.dart';
+import 'package:restaurant_app/features/orders/presentation/providers/orders_provider.dart';
 
-void main() async{
+void main() async {
   CustomNavigationHelper.instance;
 
   await Environment.initEnvironment();
+  // SocketService().initConnection();
 
   runApp(
     const ProviderScope(child: MyApp()),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appRouter = ref.watch(appRouterProvider);
+    ref.watch(ordersProvider);
+    // ref.watch(socketInstanceProvider);
     return MaterialApp.router(
-      routerConfig: CustomNavigationHelper.router,
+      routerConfig: appRouter,
       title: 'Flutter Demo',
       theme: CustomTheme.lightThemeData(context),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),

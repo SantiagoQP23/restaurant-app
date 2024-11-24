@@ -21,9 +21,14 @@ LoginResponseModel _$LoginResponseModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LoginResponseModel {
   String get token => throw _privateConstructorUsedError;
+  UserModel get user => throw _privateConstructorUsedError;
 
+  /// Serializes this LoginResponseModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LoginResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LoginResponseModelCopyWith<LoginResponseModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -34,7 +39,9 @@ abstract class $LoginResponseModelCopyWith<$Res> {
           LoginResponseModel value, $Res Function(LoginResponseModel) then) =
       _$LoginResponseModelCopyWithImpl<$Res, LoginResponseModel>;
   @useResult
-  $Res call({String token});
+  $Res call({String token, UserModel user});
+
+  $UserModelCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -47,17 +54,34 @@ class _$LoginResponseModelCopyWithImpl<$Res, $Val extends LoginResponseModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LoginResponseModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? token = null,
+    Object? user = null,
   }) {
     return _then(_value.copyWith(
       token: null == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
+      user: null == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel,
     ) as $Val);
+  }
+
+  /// Create a copy of LoginResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res> get user {
+    return $UserModelCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
   }
 }
 
@@ -69,7 +93,10 @@ abstract class _$$LoginResponseModelImplCopyWith<$Res>
       __$$LoginResponseModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String token});
+  $Res call({String token, UserModel user});
+
+  @override
+  $UserModelCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -80,34 +107,44 @@ class __$$LoginResponseModelImplCopyWithImpl<$Res>
       $Res Function(_$LoginResponseModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LoginResponseModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? token = null,
+    Object? user = null,
   }) {
     return _then(_$LoginResponseModelImpl(
       token: null == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
+      user: null == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$LoginResponseModelImpl implements _LoginResponseModel {
-  const _$LoginResponseModelImpl({required this.token});
+class _$LoginResponseModelImpl extends _LoginResponseModel {
+  const _$LoginResponseModelImpl({required this.token, required this.user})
+      : super._();
 
   factory _$LoginResponseModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginResponseModelImplFromJson(json);
 
   @override
   final String token;
+  @override
+  final UserModel user;
 
   @override
   String toString() {
-    return 'LoginResponseModel(token: $token)';
+    return 'LoginResponseModel(token: $token, user: $user)';
   }
 
   @override
@@ -115,14 +152,17 @@ class _$LoginResponseModelImpl implements _LoginResponseModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginResponseModelImpl &&
-            (identical(other.token, token) || other.token == token));
+            (identical(other.token, token) || other.token == token) &&
+            (identical(other.user, user) || other.user == user));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, token);
+  int get hashCode => Object.hash(runtimeType, token, user);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LoginResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LoginResponseModelImplCopyWith<_$LoginResponseModelImpl> get copyWith =>
@@ -137,9 +177,11 @@ class _$LoginResponseModelImpl implements _LoginResponseModel {
   }
 }
 
-abstract class _LoginResponseModel implements LoginResponseModel {
-  const factory _LoginResponseModel({required final String token}) =
-      _$LoginResponseModelImpl;
+abstract class _LoginResponseModel extends LoginResponseModel {
+  const factory _LoginResponseModel(
+      {required final String token,
+      required final UserModel user}) = _$LoginResponseModelImpl;
+  const _LoginResponseModel._() : super._();
 
   factory _LoginResponseModel.fromJson(Map<String, dynamic> json) =
       _$LoginResponseModelImpl.fromJson;
@@ -147,7 +189,12 @@ abstract class _LoginResponseModel implements LoginResponseModel {
   @override
   String get token;
   @override
-  @JsonKey(ignore: true)
+  UserModel get user;
+
+  /// Create a copy of LoginResponseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoginResponseModelImplCopyWith<_$LoginResponseModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

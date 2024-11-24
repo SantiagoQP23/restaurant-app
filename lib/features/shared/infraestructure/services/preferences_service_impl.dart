@@ -7,9 +7,9 @@ class PreferencesServiceImpl extends PreferencesService {
   }
 
   @override
-  Future<T?> getValue<T>(Preferences key) async {
+  Future<T?> getValue<T>(Preferences preference) async {
     final prefs = await getSharedPrefs();
-
+    final key = preference.toString();
     switch (T) {
       case int:
         return prefs.getInt(key) as T?;
@@ -27,14 +27,16 @@ class PreferencesServiceImpl extends PreferencesService {
   }
 
   @override
-  Future<bool> removeKey(Preferences key) async {
+  Future<bool> removeKey(Preferences preference) async {
     final prefs = await getSharedPrefs();
+    final key = preference.toString();
     return await prefs.remove(key);
   }
 
   @override
-  Future<void> setKeyValue<T>(Preferences key, T value) async {
+  Future<void> setKeyValue<T>(Preferences preference, T value) async {
     final prefs = await getSharedPrefs();
+    final key = preference.toString();
     switch (T) {
       case int:
         await prefs.setInt(key, value as int);

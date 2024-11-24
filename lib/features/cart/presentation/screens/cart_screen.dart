@@ -1,11 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:restaurant_app/config/routes/routes.dart';
+import 'package:restaurant_app/features/cart/presentation/providers/cart_providers.dart';
+import 'package:restaurant_app/features/cart/presentation/widgets/bottom_sheet_checkout.dart';
+import 'package:restaurant_app/features/cart/presentation/widgets/product_item.dart';
+import 'package:restaurant_app/features/orders/domain/entities/entities.dart';
+import 'package:restaurant_app/features/orders/presentation/providers/orders_provider.dart';
+import 'package:restaurant_app/features/orders/presentation/widgets/select_type_order.dart';
+import 'package:restaurant_app/features/tables/presentation/widgets/select_table_bottom_sheet.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
 
   @override
+  CartScreenState createState() => CartScreenState();
+}
+
+class CartScreenState extends ConsumerState<CartScreen> {
+  void _decrementGuests(int currentQuantity) {
+    if (currentQuantity >= 2) {
+      ref.read(orderGuestsProvider.notifier).setOrderGuests(--currentQuantity);
+    }
+  }
+
+  void _incrementGuests(int currentQuantity) {
+    ref.read(orderGuestsProvider.notifier).setOrderGuests(++currentQuantity);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final ordersDetails = ref.watch(orderDetailsProvider);
+    final table = ref.watch(tableOrderProvider);
+    final totalCart = ref.watch(totalCartProvider);
+    final orderType = ref.watch(orderTypeCartProvider);
+    final guests = ref.watch(orderGuestsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cart'),
@@ -14,237 +44,162 @@ class CartScreen extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              const Text('Cart items'),
-              ProductItem(),
-              ProductItem(),
-              ProductItem(),
-              ProductItem(),
-              ProductItem(),
-              ProductItem(),
-              SizedBox(
+              const SizedBox(
+                height: 10,
+              ),
+              SelectTypeOrder(
+                  orderType: orderType,
+                  onSelected: (newOrderType) {
+                    ref
+                        .read(orderTypeCartProvider.notifier)
+                        .setOrderType(newOrderType);
+                  }),
+              if (orderType == OrderType.inPlace)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Table',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 13),
+                        ),
+                        Text(table?.name ?? 'No asignada'),
+                        Container(
+                            child: table != null
+                                ? null
+                                : const Text(
+                                    'Please, select a table',
+                                    style: TextStyle(color: Colors.red),
+                                  ))
+                      ],
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          useSafeArea: true,
+                          builder: (BuildContext context) {
+                            return SelectTableBottomSheet(
+                                table: table,
+                                onTap: (newTable) {
+                                  ref
+                                      .read(tableOrderProvider.notifier)
+                                      .setTableOrder(newTable);
+                                });
+                          },
+                        );
+                      },
+                      label: const Text('Select'),
+                      // icon: Icon(Icons.edit)
+                    )
+                  ],
+                ),
+              // const Text('Select a table'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Guests',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                      // Text(table?.name ?? 'No asignada'),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove),
+                        onPressed: () {
+                          _decrementGuests(guests);
+                        },
+                      ),
+                      Text(guests.toString()),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          _incrementGuests(guests);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Cart',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                      Text('${ordersDetails.length} items '),
+                    ],
+                  ),
+                  TextButton.icon(
+                      onPressed: () {
+                        ref
+                            .read(activeOrderProvider.notifier)
+                            .clearActiveOrder();
+                        context.push(Routes.menu);
+                      },
+                      label: Text('Add'),
+                      icon: Icon(Icons.shopping_cart))
+                ],
+              ),
+              for (var orderDetail in ordersDetails)
+                ProductItem(orderDetail: orderDetail),
+              const SizedBox(
                 height: 110,
                 width: 0,
               ),
             ],
           )),
-      bottomSheet: Container(
-          padding: const EdgeInsets.all(20),
-          height: 105,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Total: '),
-                  Text('\$100'),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                  width: double.infinity,
-                  // height: 200,
-                  child: const BottomSheetExample())
-            ],
-          )),
-    );
-  }
-}
-
-class ProductItem extends StatefulWidget {
-  const ProductItem({super.key});
-
-  @override
-  State<ProductItem> createState() => _ProductItemState();
-}
-
-class _ProductItemState extends State<ProductItem> {
-  int _counter = 1;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      if (_counter > 1) {
-        _counter--;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        child: Padding(
-            padding: EdgeInsets.all(10),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Arroz marinero'),
-              Text('\$25'),
-              Text('lorem ipsum  dolor sit amet'),
-              Text('lorem ipsum  dolor sit amet'),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      bottomSheet: IntrinsicHeight(
+        child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.remove),
-                      onPressed: () {
-                        _decrementCounter();
-                      },
-                    ),
-                    Text('$_counter'),
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        _incrementCounter();
-                      },
-                    ),
+                    const Text('Total: '),
+                    Text('\$$totalCart'),
                   ],
                 ),
-                const Text('25'),
-              ])
-            ])));
-  }
-}
-
-class BottomSheetExample extends StatelessWidget {
-  const BottomSheetExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: const Text('Checkout'),
-      onPressed: () {
-        showModalBottomSheet<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-                padding: const EdgeInsets.all(10),
-                child: SizedBox(
-                  child: Center(
-                    child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        const Text('Resumen del pedido'),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text('Total: '),
-                            Text('\$100'),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text('Tipo'),
-                            Text('Para llevar'),
-                          ],
-                        ),
-                        TextButton(
-                            onPressed: () {}, child: Text('Añadir nota')),
-                        Container(
-                          child: true
-                              ? Column(
-                                  children: [
-                                    const Text('Datos del cliente'),
-                                    TextField(
-                                      minLines: 3,
-                                      maxLines: 8,
-                                      keyboardType: TextInputType.multiline,
-                                      decoration: InputDecoration(
-                                        hintText: 'Notas',
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : const SizedBox(),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ToggleButtonsSample(title: 'kalsfd'),
-                        SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              child: const Text('Crear pedido'),
-                              onPressed: () => Navigator.pop(context),
-                            ))
-                      ],
-                    ),
-                  ),
-                ));
-          },
-        );
-      },
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                    width: double.infinity,
+                    // height: 200,
+                    child: ElevatedButton(
+                      child: const Text('Checkout'),
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          // useSafeArea: true,
+                          builder: (BuildContext context) {
+                            return const BottomSheetCheckout();
+                          },
+                        );
+                      },
+                    ))
+              ],
+            )),
+      ),
     );
-  }
-}
-
-class ToggleButtonsSample extends StatefulWidget {
-  const ToggleButtonsSample({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<ToggleButtonsSample> createState() => _ToggleButtonsSampleState();
-}
-
-const List<Widget> options = <Widget>[
-  Text('1'),
-  Text('2'),
-  Text('3'),
-  Text('4'),
-  Text('5'),
-];
-
-class _ToggleButtonsSampleState extends State<ToggleButtonsSample> {
-  final List<bool> _selectedFruits = <bool>[true, false, false, false, false];
-  bool vertical = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          // ToggleButtons with a single selection.
-          Text('Single-select', style: theme.textTheme.titleSmall),
-          const SizedBox(height: 5),
-          ToggleButtons(
-            direction: vertical ? Axis.vertical : Axis.horizontal,
-            onPressed: (int index) {
-              setState(() {
-                // The button that is tapped is set to true, and the others to false.
-                for (int i = 0; i < _selectedFruits.length; i++) {
-                  _selectedFruits[i] = i == index;
-                }
-              });
-            },
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            // selectedBorderColor: Colors.red[700],
-            // selectedColor: Colors.white,
-            // fillColor: Colors.red[200],
-            // color: Colors.red[400],
-            constraints: const BoxConstraints(
-              minHeight: 40.0,
-              minWidth: 80.0,
-            ),
-            isSelected: _selectedFruits,
-            children: options,
-          ),
-
-          const SizedBox(height: 20),
-        ]);
   }
 }

@@ -5,4 +5,5 @@ class Environment {
     await dotenv.load(fileName: ".env");
   }
   static String apiUrl = dotenv.env['API_URL'] ?? 'http://localhost:3000';
+  static String serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:3000';
 }

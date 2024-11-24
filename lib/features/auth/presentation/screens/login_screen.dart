@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restaurant_app/features/auth/presentation/providers/providers.dart';
+import 'package:restaurant_app/features/shared/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -17,7 +20,7 @@ class LoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Log In',
+                'Login',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
               ),
               SizedBox(height: 36),
@@ -28,14 +31,14 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class LoginForm extends StatefulWidget {
+class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  LoginFormState createState() => LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class LoginFormState extends ConsumerState<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool passwordVisible = false;
 
@@ -51,52 +54,51 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
-    onSubmitForm() {
-      context.go('/home');
-      // if (_formKey.currentState!.validate()) {
-        // Process data.
-      // }
-    }
+    final loginForm = ref.watch(loginFormProvider);
+
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      showSnackbar(context, next.errorMessage);
+    });
 
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Text('Email', style: TextStyle(fontWeight: FontWeight.bold)),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your email',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+          // const Text('Email', style: TextStyle(fontWeight: FontWeight.bold)),
+          CustomTextFormField(
+            label: 'Enter your email',
+            keyboardType: TextInputType.name,
+          
+            onChanged: ref.read(loginFormProvider.notifier).onUsernameChange,
+            // errorMessage:
+            //     loginForm.isFormPosted ? loginForm.email.errorMessage : null,
           ),
           SizedBox.fromSize(size: const Size.fromHeight(16)),
-          const Text('Password', style: TextStyle(fontWeight: FontWeight.bold)),
-          TextFormField(
+          // const Text('Password', style: TextStyle(fontWeight: FontWeight.bold)),
+          CustomTextFormField(
             obscureText: passwordVisible,
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: InputDecoration(
-              hintText: 'Enter your password',
-              suffixIcon: IconButton(
-                  onPressed: onChangePasswordVisibility,
-                  icon: Icon(passwordVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off)),
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+            label: 'Enter your password',
+            onChanged: ref.read(loginFormProvider.notifier).onPasswordChange,
+            keyboardType: TextInputType.visiblePassword,
+            // decoration: InputDecoration(
+            //   hintText: 'Enter your password',
+            //   suffixIcon: IconButton(
+            //       onPressed: onChangePasswordVisibility,
+            //       icon: Icon(passwordVisible
+            //           ? Icons.visibility
+            //           : Icons.visibility_off)),
+            // ),
+            onFieldSubmitted: (_) => ref.read(loginFormProvider.notifier).onFormSubmit(),
           ),
           SizedBox.fromSize(size: const Size.fromHeight(16)),
           Row(
@@ -118,7 +120,9 @@ class _LoginFormState extends State<LoginForm> {
               minimumSize: const Size(
                   double.infinity, 50), // Set minimum width and height
             ),
-            onPressed: onSubmitForm,
+            onPressed: loginForm.isPosting
+                ? null
+                : ref.read(loginFormProvider.notifier).onFormSubmit,
             child: const Text('Login'),
           ),
           SizedBox.fromSize(size: const Size.fromHeight(26)),

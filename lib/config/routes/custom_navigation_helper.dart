@@ -124,7 +124,7 @@ class CustomNavigationHelper {
                 path: settingsPath,
                 pageBuilder: (context, state) {
                   return getPage(
-                    child: const OrderScreen(),
+                    child: const OrderScreen(id: '',),
                     state: state,
                   );
                 },
@@ -150,7 +150,7 @@ class CustomNavigationHelper {
         path: '/order',
         pageBuilder: (context, state) {
           return getPage(
-            child: const OrderScreen(),
+            child: const OrderScreen(id: ''),
             state: state,
           );
         },
@@ -179,7 +179,7 @@ class CustomNavigationHelper {
         path: detailPath,
         pageBuilder: (context, state) {
           return getPage(
-            child: const OrderScreen(),
+            child: const OrderScreen(id: '',),
             state: state,
           );
         },
