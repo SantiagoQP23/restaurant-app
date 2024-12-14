@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:restaurant_app/features/cart/infraestructura/models/product_model.dart';
 import 'package:restaurant_app/features/orders/domain/entities/entities.dart';
+import 'package:restaurant_app/features/orders/infraestructura/models/update_order_detail_dto.dart';
 
 part 'order_detail_model.freezed.dart';
 part 'order_detail_model.g.dart';
@@ -14,6 +15,7 @@ class OrderDetailModel with _$OrderDetailModel {
     required double quantity,
     required double price,
     required double qtyDelivered,
+    required double qtyPaid,
     required double amount,
     required String description,
     required String createdAt,
@@ -30,6 +32,7 @@ class OrderDetailModel with _$OrderDetailModel {
         quantity: quantity,
         price: price,
         qtyDelivered: qtyDelivered,
+        qtyPaid: qtyPaid,
         amount: amount,
         description: description,
         createdAt: DateTime.parse(createdAt),
@@ -37,4 +40,5 @@ class OrderDetailModel with _$OrderDetailModel {
         isActive: isActive,
         product: product.toEntity(),
       );
+
 }

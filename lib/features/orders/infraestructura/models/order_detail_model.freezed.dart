@@ -24,6 +24,7 @@ mixin _$OrderDetailModel {
   double get quantity => throw _privateConstructorUsedError;
   double get price => throw _privateConstructorUsedError;
   double get qtyDelivered => throw _privateConstructorUsedError;
+  double get qtyPaid => throw _privateConstructorUsedError;
   double get amount => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
@@ -52,6 +53,7 @@ abstract class $OrderDetailModelCopyWith<$Res> {
       double quantity,
       double price,
       double qtyDelivered,
+      double qtyPaid,
       double amount,
       String description,
       String createdAt,
@@ -81,6 +83,7 @@ class _$OrderDetailModelCopyWithImpl<$Res, $Val extends OrderDetailModel>
     Object? quantity = null,
     Object? price = null,
     Object? qtyDelivered = null,
+    Object? qtyPaid = null,
     Object? amount = null,
     Object? description = null,
     Object? createdAt = null,
@@ -104,6 +107,10 @@ class _$OrderDetailModelCopyWithImpl<$Res, $Val extends OrderDetailModel>
       qtyDelivered: null == qtyDelivered
           ? _value.qtyDelivered
           : qtyDelivered // ignore: cast_nullable_to_non_nullable
+              as double,
+      qtyPaid: null == qtyPaid
+          ? _value.qtyPaid
+          : qtyPaid // ignore: cast_nullable_to_non_nullable
               as double,
       amount: null == amount
           ? _value.amount
@@ -156,6 +163,7 @@ abstract class _$$OrderDetailModelImplCopyWith<$Res>
       double quantity,
       double price,
       double qtyDelivered,
+      double qtyPaid,
       double amount,
       String description,
       String createdAt,
@@ -184,6 +192,7 @@ class __$$OrderDetailModelImplCopyWithImpl<$Res>
     Object? quantity = null,
     Object? price = null,
     Object? qtyDelivered = null,
+    Object? qtyPaid = null,
     Object? amount = null,
     Object? description = null,
     Object? createdAt = null,
@@ -207,6 +216,10 @@ class __$$OrderDetailModelImplCopyWithImpl<$Res>
       qtyDelivered: null == qtyDelivered
           ? _value.qtyDelivered
           : qtyDelivered // ignore: cast_nullable_to_non_nullable
+              as double,
+      qtyPaid: null == qtyPaid
+          ? _value.qtyPaid
+          : qtyPaid // ignore: cast_nullable_to_non_nullable
               as double,
       amount: null == amount
           ? _value.amount
@@ -244,6 +257,7 @@ class _$OrderDetailModelImpl extends _OrderDetailModel {
       required this.quantity,
       required this.price,
       required this.qtyDelivered,
+      required this.qtyPaid,
       required this.amount,
       required this.description,
       required this.createdAt,
@@ -264,6 +278,8 @@ class _$OrderDetailModelImpl extends _OrderDetailModel {
   @override
   final double qtyDelivered;
   @override
+  final double qtyPaid;
+  @override
   final double amount;
   @override
   final String description;
@@ -278,7 +294,7 @@ class _$OrderDetailModelImpl extends _OrderDetailModel {
 
   @override
   String toString() {
-    return 'OrderDetailModel(id: $id, quantity: $quantity, price: $price, qtyDelivered: $qtyDelivered, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive, product: $product)';
+    return 'OrderDetailModel(id: $id, quantity: $quantity, price: $price, qtyDelivered: $qtyDelivered, qtyPaid: $qtyPaid, amount: $amount, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive, product: $product)';
   }
 
   @override
@@ -292,6 +308,7 @@ class _$OrderDetailModelImpl extends _OrderDetailModel {
             (identical(other.price, price) || other.price == price) &&
             (identical(other.qtyDelivered, qtyDelivered) ||
                 other.qtyDelivered == qtyDelivered) &&
+            (identical(other.qtyPaid, qtyPaid) || other.qtyPaid == qtyPaid) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -312,6 +329,7 @@ class _$OrderDetailModelImpl extends _OrderDetailModel {
       quantity,
       price,
       qtyDelivered,
+      qtyPaid,
       amount,
       description,
       createdAt,
@@ -342,6 +360,7 @@ abstract class _OrderDetailModel extends OrderDetailModel {
       required final double quantity,
       required final double price,
       required final double qtyDelivered,
+      required final double qtyPaid,
       required final double amount,
       required final String description,
       required final String createdAt,
@@ -361,6 +380,8 @@ abstract class _OrderDetailModel extends OrderDetailModel {
   double get price;
   @override
   double get qtyDelivered;
+  @override
+  double get qtyPaid;
   @override
   double get amount;
   @override

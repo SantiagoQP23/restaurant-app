@@ -4,9 +4,9 @@ class Person {
   final String id;
   final String name;
   final String lastName;
-  final String email;
+  final String? email;
   final String? phone;
-  final Identification identification;
+  final Identification? identification;
 
   Person({
     required this.id,

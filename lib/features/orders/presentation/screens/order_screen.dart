@@ -7,8 +7,10 @@ import 'package:restaurant_app/features/orders/domain/entities/entities.dart';
 import 'package:restaurant_app/features/orders/presentation/providers/orders_provider.dart';
 import 'package:restaurant_app/features/orders/presentation/widgets/checkout_order.dart';
 import 'package:restaurant_app/features/orders/presentation/widgets/edit_order_detail.dart';
+import 'package:restaurant_app/features/orders/presentation/widgets/order_detail_card.dart';
 import 'package:restaurant_app/features/orders/presentation/widgets/select_type_order.dart';
 import 'package:restaurant_app/features/orders/presentation/widgets/select_user_bottom_sheet.dart';
+import 'package:restaurant_app/features/shared/widgets/order_status_chip.dart';
 import 'package:restaurant_app/features/tables/presentation/widgets/select_table_bottom_sheet.dart';
 
 class OrderScreen extends ConsumerWidget {
@@ -130,14 +132,12 @@ class OrderScaffoldState extends ConsumerState<OrderScaffold> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  orderStatusChip(status: order.status),
                   Text(
-                    widget.order.status.name,
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                  Text(
-                    'Order N: ${widget.order.number}',
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                    'Order #${widget.order.number}',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                    // style: const TextStyle(
+                    //     fontSize: 26, fontWeight: FontWeight.bold),
                   ),
                   Text(formatDate.format(widget.order.createdAt)),
                 ],
@@ -383,30 +383,13 @@ class OrderScaffoldState extends ConsumerState<OrderScaffold> {
 
             Column(
               children: widget.order.details
-                  .map((detail) => ListTile(
-                        title:
-                            Text('${detail.product.name} x${detail.quantity}'),
-                        subtitle: Text(detail.description),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 15,
-                          ),
-                          onPressed: () {
-                            showModalBottomSheet<void>(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (BuildContext context) {
-                                  return EditOrderDetail(orderDetail: detail);
-                                });
-                          },
-                        ),
-                      ))
+                  .map((detail) => OrderDetailCard(
+                      orderDetail: detail, orderId: widget.order.id))
                   .toList(),
             ),
 
             const SizedBox(
-              height: 110,
+              height: 150,
               width: 0,
             ),
           ],
@@ -455,7 +438,7 @@ class OrderScaffoldState extends ConsumerState<OrderScaffold> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (order.status == OrderStatus.inProgress)
-                      ElevatedButton.icon(
+                      TextButton.icon(
                           icon: const Icon(Icons.arrow_back),
                           label: const Text('Pending'),
                           onPressed: () {
@@ -478,7 +461,13 @@ class OrderScaffoldState extends ConsumerState<OrderScaffold> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // const Text('Total'),
-                    Text('\$${widget.order.total}'),
+                    Row(
+                      children: [
+                        Text('\$${widget.order.total}'),
+                        const SizedBox(width: 10),
+                        Chip(label: Text(order.isPaid ? 'Paid' : 'Pending')),
+                      ],
+                    ),
                     CheckoutOrder(order: widget.order),
                   ],
                 ),
@@ -498,8 +487,8 @@ class OrderScaffoldState extends ConsumerState<OrderScaffold> {
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
-                // textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
+                  // textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
               child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();

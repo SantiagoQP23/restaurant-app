@@ -75,17 +75,17 @@ GoRoute orderRoute = GoRoute(
           path: 'new-bill',
           builder: (context, state) => const NewBillScreen(),
           routes: [
-            GoRoute(
-                path: 'bill',
-                builder: (context, state) => const BillScreen(),
-                routes: [
-                  GoRoute(
-                    path: 'checkout',
-                    builder: (context, state) => const CheckoutScreen(),
-                  ),
-                ])
+            // GoRoute(
+            //     path: 'bill',
+            //     builder: (context, state) => const BillScreen(),
+            //     routes: [
+            //       GoRoute(
+            //         path: 'checkout',
+            //         builder: (context, state) => const CheckoutScreen(),
+            //       ),
+            //     ])
           ]),
-      GoRoute(path: 'bill', builder: (context, state) => const BillScreen()),
+      // GoRoute(path: 'bill', builder: (context, state) => const BillScreen()),
     ]);
 
 // GoRouter configuration

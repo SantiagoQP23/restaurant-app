@@ -12,9 +12,9 @@ class PersonModel with _$PersonModel {
     required String id,
     required String firstName,
     required String lastName,
-    required String email,
+    required String? email,
     String? numPhone,
-    required IdentificationModel identification,
+    required IdentificationModel? identification,
   }) = _PersonModel;
 
   factory PersonModel.fromJson(Map<String, dynamic> json) =>
@@ -26,6 +26,6 @@ class PersonModel with _$PersonModel {
       lastName: lastName,
       email: email,
       phone: numPhone,
-      identification: identification.toEntity(),
+      identification: identification?.toEntity(),
     );
 }

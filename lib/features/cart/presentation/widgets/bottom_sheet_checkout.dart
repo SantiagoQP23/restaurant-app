@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:restaurant_app/features/cart/presentation/providers/cart_providers.dart';
 import 'package:restaurant_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:restaurant_app/features/cart/presentation/widgets/toggle_buttons_sample.dart';
@@ -31,9 +32,9 @@ class BottomSheetCheckoutState extends ConsumerState<BottomSheetCheckout> {
   @override
   Widget build(BuildContext context) {
     final totalCart = ref.watch(totalCartProvider);
-    final createOrderDto = ref.watch(createOrderDtoProvider);
+    final createOrderDto = ref.watch(createOrderDtoDataProvider);
     final notes = ref.watch(orderNotesProvider);
-    _controller.text  = notes;
+    _controller.text = notes;
     return IntrinsicHeight(
         child: Container(
       padding: const EdgeInsets.all(10),
@@ -91,8 +92,11 @@ class BottomSheetCheckoutState extends ConsumerState<BottomSheetCheckout> {
                     onPressed: () {
                       ref
                           .read(activeOrdersProvider.notifier)
-                          .addOrder(createOrderDto);
-                      Navigator.pop(context);
+                          .emitCreateOrder(createOrderDto, (orderId) {
+                        // ref.read(createOrderDtoDataProvider.notifier).clearCreateOrderDto();
+                        context.pop();
+                        context.go("/home");
+                      });
                     },
                   )),
               SizedBox(

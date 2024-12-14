@@ -21,6 +21,12 @@ _$BillModelImpl _$$BillModelImplFromJson(Map<String, dynamic> json) =>
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
       isActive: json['isActive'] as bool,
+      createdBy: json['createdBy'] == null
+          ? null
+          : UserModel.fromJson(json['createdBy'] as Map<String, dynamic>),
+      owner: json['owner'] == null
+          ? null
+          : UserModel.fromJson(json['owner'] as Map<String, dynamic>),
       details: (json['details'] as List<dynamic>)
           .map((e) => BillDetailModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -41,5 +47,7 @@ Map<String, dynamic> _$$BillModelImplToJson(_$BillModelImpl instance) =>
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
       'isActive': instance.isActive,
+      'createdBy': instance.createdBy,
+      'owner': instance.owner,
       'details': instance.details,
     };

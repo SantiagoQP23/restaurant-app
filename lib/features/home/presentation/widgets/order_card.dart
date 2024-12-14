@@ -17,7 +17,7 @@ class _OrderCardState extends State<OrderCard> {
   @override
   Widget build(BuildContext context) {
     Order order = widget.order;
-    String date = (DateFormat.yMMMd().format(order.createdAt));
+    String date = '${DateFormat.yMMMd().format(order.createdAt)} ${DateFormat.Hm().format(order.createdAt)}';
     return Card(
         clipBehavior: Clip.hardEdge,
         child: InkWell(
@@ -34,36 +34,55 @@ class _OrderCardState extends State<OrderCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Text(date),
-                      orderStatusChip(status: order.status),
-                      Text(order.type == OrderType.inPlace
-                          ? 'Table ${order.table?.name ?? ''}'
-                          : 'Para llevar'),
+                      Row(
+                        children: [
+                          if (order.type == OrderType.inPlace)
+                            const Icon(
+                              Icons.restaurant_menu,
+                              size: 18,
+                            ),
+                          if (order.type == OrderType.takeAway)
+                            const Icon(
+                              Icons.shopping_bag,
+                              size: 18,
+                            ),
+
+                          const SizedBox(width: 5),
+                          Text(order.type == OrderType.inPlace
+                              ? 'Table ${order.table?.name ?? ''}'
+                              : 'Para llevar'),
+                        ],
+                      ),
                       Text('#${order.number} '),
                     ],
                   ),
-                  Row(
-                    children: [],
-                  ),
-                  // Row(children: [
-                  //   Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Text('Arroz marinero'),
-                  //       Text('Cazuela de mariscos'),
-                  //     ],
-                  //   ),
-                  // ]),
-                  const Divider(
-                    height: 30,
-                    thickness: 1,
-                    color: Colors.grey,
-                  ),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(order.details.length.toString() + ' items'),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              '${order.waiter.person.name} ${order.waiter.person.lastName}'),
+                          Text('${order.details.length} items'),
+                        ],
+                      ),
+                      orderStatusChip(status: order.status),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Text(date),
-                      Text('Total: \$${order.total}'),
+                      Text(
+                        '\$${order.total}',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ],
                   )
                 ],

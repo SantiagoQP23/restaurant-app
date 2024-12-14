@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:restaurant_app/config/routes/app_router.dart';
 import 'package:restaurant_app/features/orders/domain/entities/entities.dart';
+import 'package:restaurant_app/features/orders/presentation/widgets/bill_creation_sheet.dart';
 
 class CheckoutOrder extends StatelessWidget {
   final Order order;
@@ -15,7 +17,7 @@ class CheckoutOrder extends StatelessWidget {
     final totalToPay = order.total - totalPaid;
     return FilledButton.icon(
       icon: const Icon(Icons.payment),
-      label: const Text('Pagar'),
+      label: const Text('Payments'),
       onPressed: () {
         showModalBottomSheet<void>(
           context: context,
@@ -29,18 +31,22 @@ class CheckoutOrder extends StatelessWidget {
                   // mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     const Text(
-                      'Resumen del pedido',
+                      "Order's payments",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('Total'),
-                        Text('\$${order.total}'),
+                        Text(
+                          '\$${order.total}',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
                     Expanded(
@@ -51,45 +57,127 @@ class CheckoutOrder extends StatelessWidget {
                               itemCount: order.bills.length,
                               itemBuilder: (context, index) {
                                 final bill = order.bills[index];
-                                return ListTile(
-                                  leading: CircularProgressIndicator(
-                                    strokeWidth: 3,
-                                    value: bill.total / order.total,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.blue),
-                                  ),
-                                  title: Text('${bill.paymentMethod.name}'),
-                                  subtitle:
-                                      Text(formatDate.format(bill.createdAt)),
-                                  trailing: Text('\$${bill.total}'),
-                                );
+                                final percentage =
+                                    bill.total / order.total * 100;
+                                final name =
+                                    '${bill.createdBy?.person.name} ${bill.createdBy?.person.lastName}';
+                                return Card(
+                                    clipBehavior: Clip.hardEdge,
+                                    child: InkWell(
+                                      splashColor: Colors.blue.withAlpha(30),
+                                      onTap: () {
+                                        context.push(
+                                            '${AppRoutes.bills}/${bill.id}');
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                // SizedBox(
+                                                //   width: 25,
+                                                //   height: 25,
+                                                //   child:
+                                                //       CircularProgressIndicator(
+                                                //     strokeWidth: 3,
+                                                //     value: bill.total /
+                                                //         order.total,
+                                                //     valueColor:
+                                                //         AlwaysStoppedAnimation<
+                                                //             Color>(Colors.blue),
+                                                //   ),
+                                                // ),
+                                                // const SizedBox(
+                                                //   width: 10,
+                                                // ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          '$name ',
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        Text(
+                                                            '${percentage.toStringAsFixed(2)} %'),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(bill.paymentMethod
+                                                            .name),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(formatDate.format(
+                                                            bill.createdAt)),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Text('\$${bill.total}'),
+                                          ],
+                                        ),
+                                      ),
+                                    ));
                               }),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Total por pagar'),
-                        Text('\$$totalToPay'),
+                        if (order.isPaid)
+                          Chip(label: Text(order.isPaid ? 'Paid' : 'Pending')),
+                        if (!order.isPaid) const Text('Total por pagar'),
+                        Text(
+                          '\$$totalToPay',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          child: const Text('Crear cuenta'),
-                          onPressed: () => totalToPay != 0
-                              ? context.go('/order/new-bill')
-                              : null,
-                        ))
+                    if (totalToPay != 0)
+                      SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            child: const Text('Add bill'),
+                            onPressed: () => totalToPay != 0
+                                ? _showBillCreationSheet(context)
+                                : null,
+                          ))
                   ],
                 ));
           },
         );
+      },
+    );
+  }
+
+  void _showBillCreationSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return BillCreationSheet(order: order);
       },
     );
   }

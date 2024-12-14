@@ -20,22 +20,7 @@ final totalCartProvider = AutoDisposeProvider<double>.internal(
 );
 
 typedef TotalCartRef = AutoDisposeProviderRef<double>;
-String _$createOrderDtoHash() => r'4c9be527d61e875eaaad2a3d10300cf4e1f7c9bd';
-
-/// See also [createOrderDto].
-@ProviderFor(createOrderDto)
-final createOrderDtoProvider = Provider<CreateOrderDto>.internal(
-  createOrderDto,
-  name: r'createOrderDtoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$createOrderDtoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef CreateOrderDtoRef = ProviderRef<CreateOrderDto>;
-String _$tableOrderHash() => r'b4157f708c24cb5ed03636f38f6f8a4d92de496c';
+String _$tableOrderHash() => r'2ba40d0337504e10bbc00216165cf0aa1ec4375a';
 
 /// See also [TableOrder].
 @ProviderFor(TableOrder)
@@ -108,5 +93,22 @@ final orderDetailsProvider =
 );
 
 typedef _$OrderDetails = Notifier<List<NewOrderDetail>>;
+String _$createOrderDtoDataHash() =>
+    r'a14f9aa3247fb724207cc85b87fd51e7d164cfa1';
+
+/// See also [CreateOrderDtoData].
+@ProviderFor(CreateOrderDtoData)
+final createOrderDtoDataProvider =
+    NotifierProvider<CreateOrderDtoData, CreateOrderDto>.internal(
+  CreateOrderDtoData.new,
+  name: r'createOrderDtoDataProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$createOrderDtoDataHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CreateOrderDtoData = Notifier<CreateOrderDto>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

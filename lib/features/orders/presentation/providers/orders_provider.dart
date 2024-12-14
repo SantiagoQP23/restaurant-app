@@ -87,11 +87,13 @@ class ActiveOrders extends _$ActiveOrders {
     return repository.getActiveOrders();
   }
 
-  void onNewOrder(dynamic data) {
+  void onCreatedOrder(dynamic data) {
     // final socketService = ref.watch(socketInstanceProvider);
     final msg = data['msg'];
     final toast = ToastServiceImpl();
     toast.show(msg, ToastType.success);
+    final orderModel = OrderModel.fromJson(data['data']);
+    addOrder(orderModel.toEntity());
   }
 
   void onUpdatedOrder(dynamic data) {
@@ -100,6 +102,12 @@ class ActiveOrders extends _$ActiveOrders {
     toast.show(msg, ToastType.success);
     final orderModel = OrderModel.fromJson(data['data']);
     updateOrder(orderModel.toEntity());
+  }
+
+  void addOrder(Order newOrder) {
+    final currentOrders = state.asData?.value ?? [];
+    final newState = [...currentOrders, newOrder];
+    state = AsyncValue.data(newState);
   }
 
   void updateOrder(Order updatedOrder) {
@@ -113,18 +121,22 @@ class ActiveOrders extends _$ActiveOrders {
     state = AsyncValue.data(newState);
   }
 
-  void addOrder(CreateOrderDto newOrder) {
+  void emitCreateOrder(CreateOrderDto newOrder, Function(dynamic)? callback) {
     final socketService = ref.watch(socketInstanceProvider);
     final toast = ToastServiceImpl();
-    socketService.socket.emitWithAck('create-order', newOrder.toJson(),
-        ack: (data) {
-      final socketResponse = SocketEventMapper.fromJson(data);
-      if (socketResponse.ok) {
-        toast.show(socketResponse.msg, ToastType.success);
-      } else {
-        toast.show(socketResponse.msg, ToastType.error);
-      }
-    });
+    String orderId = '';
+    if (callback != null) {
+      callback(orderId);
+    }
+    // socketService.socket.emitWithAck('create-order', newOrder.toJson(),
+    //     ack: (data) {
+    //   final socketResponse = SocketEventMapper.fromJson(data);
+    //   if (socketResponse.ok) {
+    //     toast.show(socketResponse.msg, ToastType.success);
+    //   } else {
+    //     toast.show(socketResponse.msg, ToastType.error);
+    //   }
+    // });
   }
 
   void emitUpdateOrder(UpdateOrderDto updateOrder) {

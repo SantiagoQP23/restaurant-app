@@ -8,6 +8,7 @@ import 'package:restaurant_app/features/cart/presentation/screens/menu_screen.da
 import 'package:restaurant_app/features/cart/presentation/screens/product_screen.dart';
 import 'package:restaurant_app/features/cart/presentation/screens/tables_screen.dart';
 import 'package:restaurant_app/features/home/presentation/screens/main_screen.dart';
+import 'package:restaurant_app/features/orders/presentation/screens/bill_screen.dart';
 import 'package:restaurant_app/features/orders/presentation/screens/order_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:restaurant_app/features/home/presentation/screens/home_screen.dart';
@@ -23,6 +24,7 @@ class AppRoutes {
   static const menu = '/menu';
   static const tables = '/tables';
   static const orders = '/orders';
+  static const bills = '/bills';
 }
 
 @Riverpod(keepAlive: true)
@@ -58,6 +60,12 @@ GoRouter appRouter(AppRouterRef ref) {
           builder: (BuildContext context, GoRouterState state) {
             final orderId = state.pathParameters['orderId'] ?? '';
             return OrderScreen(id: orderId);
+          }),
+      GoRoute(
+          path: '/bills/:billId',
+          builder: (BuildContext context, GoRouterState state) {
+            final billId = state.pathParameters['billId'] ?? "0";
+            return BillScreen(id: int.parse(billId));
           }),
     ],
     redirect: (context, state) {

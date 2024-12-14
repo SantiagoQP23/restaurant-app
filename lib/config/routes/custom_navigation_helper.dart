@@ -155,16 +155,16 @@ class CustomNavigationHelper {
           );
         },
       ),
-      GoRoute(
-        parentNavigatorKey: parentNavigatorKey,
-        path: signUpPath,
-        pageBuilder: (context, state) {
-          return getPage(
-            child: const BillScreen(),
-            state: state,
-          );
-        },
-      ),
+      // GoRoute(
+      //   parentNavigatorKey: parentNavigatorKey,
+      //   path: signUpPath,
+      //   pageBuilder: (context, state) {
+      //     return getPage(
+      //       child: const BillScreen(0),
+      //       state: state,
+      //     );
+      //   },
+      // ),
       GoRoute(
         parentNavigatorKey: parentNavigatorKey,
         path: signInPath,

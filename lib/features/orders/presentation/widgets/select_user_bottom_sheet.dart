@@ -104,7 +104,7 @@ class _UsersBottomSheetState extends ConsumerState<UsersBottomSheet> {
                     return ListTile(
                         title:
                             Text('${user.person.name} ${user.person.lastName}'),
-                        subtitle: Text(user.person.email),
+                        subtitle: Text(user.person.email ?? ''),
                         trailing: Checkbox(
                             value: user.id == selectedUser,
                             onChanged: (value) => onChanged(value, user)));

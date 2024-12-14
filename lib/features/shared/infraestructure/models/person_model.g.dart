@@ -11,10 +11,12 @@ _$PersonModelImpl _$$PersonModelImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      email: json['email'] as String,
+      email: json['email'] as String?,
       numPhone: json['numPhone'] as String?,
-      identification: IdentificationModel.fromJson(
-          json['identification'] as Map<String, dynamic>),
+      identification: json['identification'] == null
+          ? null
+          : IdentificationModel.fromJson(
+              json['identification'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$PersonModelImplToJson(_$PersonModelImpl instance) =>

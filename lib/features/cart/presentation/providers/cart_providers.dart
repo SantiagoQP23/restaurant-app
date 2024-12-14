@@ -17,6 +17,10 @@ class TableOrder extends _$TableOrder {
   void setTableOrder(TableEntity table) {
     state = table;
   }
+
+  void clearTableOrder() {
+    state = null;
+  }
 }
 
 @Riverpod(keepAlive: true)
@@ -91,22 +95,33 @@ double totalCart(TotalCartRef ref) {
 }
 
 @Riverpod(keepAlive: true)
-CreateOrderDto createOrderDto(CreateOrderDtoRef ref) {
-  final table = ref.watch(tableOrderProvider);
-  final orderType = ref.watch(orderTypeCartProvider);
-  final orderDetails = ref.watch(orderDetailsProvider);
-  final guests = ref.watch(orderGuestsProvider);
-  final notes = ref.watch(orderNotesProvider);
-  return CreateOrderDto(
-      details: orderDetails
-          .map((orderDetail) => CreateOrderDetailDto(
-              description: orderDetail.note,
-              productId: orderDetail.product.id,
-              quantity: orderDetail.quantity,
-              price: orderDetail.product.price))
-          .toList(),
-      tableId: table?.id,
-      typeOrder: orderType,
-      notes: notes,
-      people: guests);
+class CreateOrderDtoData extends _$CreateOrderDtoData {
+  @override
+  CreateOrderDto build() {
+    final table = ref.watch(tableOrderProvider);
+    final orderType = ref.watch(orderTypeCartProvider);
+    final orderDetails = ref.watch(orderDetailsProvider);
+    final guests = ref.watch(orderGuestsProvider);
+    final notes = ref.watch(orderNotesProvider);
+    return CreateOrderDto(
+        details: orderDetails
+            .map((orderDetail) => CreateOrderDetailDto(
+                description: orderDetail.note,
+                productId: orderDetail.product.id,
+                quantity: orderDetail.quantity,
+                price: orderDetail.product.price))
+            .toList(),
+        tableId: table?.id,
+        typeOrder: orderType,
+        notes: notes,
+        people: guests);
+  }
+
+  void clearCreateOrderDto() {
+    ref.read(orderDetailsProvider.notifier).clearOrderDetails();
+    ref.read(orderGuestsProvider.notifier).setOrderGuests(1);
+    ref.read(orderNotesProvider.notifier).setOrderNotes('');
+    ref.read(orderTypeCartProvider.notifier).setOrderType(OrderType.inPlace);
+    ref.read(tableOrderProvider.notifier).clearTableOrder();
+  }
 }

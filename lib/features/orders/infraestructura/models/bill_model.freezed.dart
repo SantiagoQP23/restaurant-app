@@ -34,6 +34,8 @@ mixin _$BillModel {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   bool get isActive => throw _privateConstructorUsedError;
+  UserModel? get createdBy => throw _privateConstructorUsedError;
+  UserModel? get owner => throw _privateConstructorUsedError;
   List<BillDetailModel> get details => throw _privateConstructorUsedError;
 
   /// Serializes this BillModel to a JSON map.
@@ -65,7 +67,12 @@ abstract class $BillModelCopyWith<$Res> {
       String createdAt,
       String updatedAt,
       bool isActive,
+      UserModel? createdBy,
+      UserModel? owner,
       List<BillDetailModel> details});
+
+  $UserModelCopyWith<$Res>? get createdBy;
+  $UserModelCopyWith<$Res>? get owner;
 }
 
 /// @nodoc
@@ -96,6 +103,8 @@ class _$BillModelCopyWithImpl<$Res, $Val extends BillModel>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? isActive = null,
+    Object? createdBy = freezed,
+    Object? owner = freezed,
     Object? details = null,
   }) {
     return _then(_value.copyWith(
@@ -151,11 +160,47 @@ class _$BillModelCopyWithImpl<$Res, $Val extends BillModel>
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool,
+      createdBy: freezed == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
+      owner: freezed == owner
+          ? _value.owner
+          : owner // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
       details: null == details
           ? _value.details
           : details // ignore: cast_nullable_to_non_nullable
               as List<BillDetailModel>,
     ) as $Val);
+  }
+
+  /// Create a copy of BillModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res>? get createdBy {
+    if (_value.createdBy == null) {
+      return null;
+    }
+
+    return $UserModelCopyWith<$Res>(_value.createdBy!, (value) {
+      return _then(_value.copyWith(createdBy: value) as $Val);
+    });
+  }
+
+  /// Create a copy of BillModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res>? get owner {
+    if (_value.owner == null) {
+      return null;
+    }
+
+    return $UserModelCopyWith<$Res>(_value.owner!, (value) {
+      return _then(_value.copyWith(owner: value) as $Val);
+    });
   }
 }
 
@@ -181,7 +226,14 @@ abstract class _$$BillModelImplCopyWith<$Res>
       String createdAt,
       String updatedAt,
       bool isActive,
+      UserModel? createdBy,
+      UserModel? owner,
       List<BillDetailModel> details});
+
+  @override
+  $UserModelCopyWith<$Res>? get createdBy;
+  @override
+  $UserModelCopyWith<$Res>? get owner;
 }
 
 /// @nodoc
@@ -210,6 +262,8 @@ class __$$BillModelImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? isActive = null,
+    Object? createdBy = freezed,
+    Object? owner = freezed,
     Object? details = null,
   }) {
     return _then(_$BillModelImpl(
@@ -265,6 +319,14 @@ class __$$BillModelImplCopyWithImpl<$Res>
           ? _value.isActive
           : isActive // ignore: cast_nullable_to_non_nullable
               as bool,
+      createdBy: freezed == createdBy
+          ? _value.createdBy
+          : createdBy // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
+      owner: freezed == owner
+          ? _value.owner
+          : owner // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
       details: null == details
           ? _value._details
           : details // ignore: cast_nullable_to_non_nullable
@@ -290,6 +352,8 @@ class _$BillModelImpl extends _BillModel {
       required this.createdAt,
       required this.updatedAt,
       required this.isActive,
+      required this.createdBy,
+      this.owner,
       required final List<BillDetailModel> details})
       : _details = details,
         super._();
@@ -324,6 +388,10 @@ class _$BillModelImpl extends _BillModel {
   final String updatedAt;
   @override
   final bool isActive;
+  @override
+  final UserModel? createdBy;
+  @override
+  final UserModel? owner;
   final List<BillDetailModel> _details;
   @override
   List<BillDetailModel> get details {
@@ -334,7 +402,7 @@ class _$BillModelImpl extends _BillModel {
 
   @override
   String toString() {
-    return 'BillModel(id: $id, number: $number, comments: $comments, paymentMethod: $paymentMethod, receivedAmount: $receivedAmount, change: $change, subtotal: $subtotal, total: $total, discount: $discount, isPaid: $isPaid, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive, details: $details)';
+    return 'BillModel(id: $id, number: $number, comments: $comments, paymentMethod: $paymentMethod, receivedAmount: $receivedAmount, change: $change, subtotal: $subtotal, total: $total, discount: $discount, isPaid: $isPaid, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive, createdBy: $createdBy, owner: $owner, details: $details)';
   }
 
   @override
@@ -363,6 +431,9 @@ class _$BillModelImpl extends _BillModel {
                 other.updatedAt == updatedAt) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
+            (identical(other.createdBy, createdBy) ||
+                other.createdBy == createdBy) &&
+            (identical(other.owner, owner) || other.owner == owner) &&
             const DeepCollectionEquality().equals(other._details, _details));
   }
 
@@ -383,6 +454,8 @@ class _$BillModelImpl extends _BillModel {
       createdAt,
       updatedAt,
       isActive,
+      createdBy,
+      owner,
       const DeepCollectionEquality().hash(_details));
 
   /// Create a copy of BillModel
@@ -416,6 +489,8 @@ abstract class _BillModel extends BillModel {
       required final String createdAt,
       required final String updatedAt,
       required final bool isActive,
+      required final UserModel? createdBy,
+      final UserModel? owner,
       required final List<BillDetailModel> details}) = _$BillModelImpl;
   const _BillModel._() : super._();
 
@@ -449,6 +524,10 @@ abstract class _BillModel extends BillModel {
   String get updatedAt;
   @override
   bool get isActive;
+  @override
+  UserModel? get createdBy;
+  @override
+  UserModel? get owner;
   @override
   List<BillDetailModel> get details;
 

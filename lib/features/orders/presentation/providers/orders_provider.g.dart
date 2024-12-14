@@ -49,7 +49,7 @@ final activeOrderProvider = NotifierProvider<ActiveOrder, Order?>.internal(
 );
 
 typedef _$ActiveOrder = Notifier<Order?>;
-String _$activeOrdersHash() => r'2f6660d7798c80233cca489680ccbb699c896a8e';
+String _$activeOrdersHash() => r'88833436637678e77c829f087dc3360ee2871081';
 
 /// See also [ActiveOrders].
 @ProviderFor(ActiveOrders)

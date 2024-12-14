@@ -47,16 +47,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ref.read(activeOrdersProvider.notifier).onUpdatedOrder(data);
       // print('Order updated: ${data.toString()}');
     });
+
+    socketService.socket.on(SocketEvents.orderCreated, (dynamic data) {
+      ref.read(activeOrdersProvider.notifier).onCreatedOrder(data);
+
+
+      // print('Order created: ${data.toString()}');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     ref.watch(sectionsProvider);
-    final orderDetails = ref.watch(orderDetailsProvider);
     final router = ref.watch(appRouterProvider);
-    final text = socketService.serverStatus == ServerStatus.online
-        ? 'Online'
-        : 'Offline';
     return DefaultTabController(
         length: 5,
         child: Scaffold(

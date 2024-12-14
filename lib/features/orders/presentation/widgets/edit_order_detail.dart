@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurant_app/core/websockets/socket_service.dart';
 import 'package:restaurant_app/features/orders/domain/entities/entities.dart';
+import 'package:restaurant_app/features/orders/presentation/providers/orders_provider.dart';
+import 'package:restaurant_app/features/shared/infraestructure/models/socket_event_mapper.dart';
+import 'package:restaurant_app/features/shared/infraestructure/services/toast_service.dart';
+import 'package:restaurant_app/features/shared/infraestructure/services/toast_service_imp.dart';
+import 'package:restaurant_app/features/shared/providers/socket_provider.dart';
 
-class EditOrderDetail extends StatefulWidget {
+class EditOrderDetail extends ConsumerStatefulWidget {
   final OrderDetail orderDetail;
-  const EditOrderDetail({super.key, required this.orderDetail});
+  final String orderId;
+  const EditOrderDetail(
+      {super.key, required this.orderDetail, required this.orderId});
 
   @override
-  State<EditOrderDetail> createState() => _EditOrderDetailState();
+  EditOrderDetailState createState() => EditOrderDetailState();
 }
 
-class _EditOrderDetailState extends State<EditOrderDetail> {
+class EditOrderDetailState extends ConsumerState<EditOrderDetail> {
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  late SocketService socketService;
   String note = '';
   String price = '';
   double _counter = 1;
   double quantity = 0;
   double quantityDelivered = 0;
+  late Order activeOrder;
 
   updateNote(String value) {
     setState(() {
@@ -54,9 +65,28 @@ class _EditOrderDetailState extends State<EditOrderDetail> {
     });
   }
 
+  void updateOrderDetail() {
+    socketService.socket.emitWithAck(
+        SocketEvents.updateOrderDetail,
+        widget.orderDetail.toUpdateOrderDto(
+          orderId: widget.orderId,
+          quantity: _counter,
+          qtyDelivered: quantityDelivered,
+          description: note,
+          price: double.parse(price),
+        ), ack: (data) {
+      final toast = ToastServiceImpl();
+      final socketResponse = SocketEventMapper.fromJson(data);
+      if (socketResponse.ok) {
+        toast.show(socketResponse.msg, ToastType.success);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    socketService = ref.read(socketInstanceProvider);
     _counter = widget.orderDetail.quantity;
     quantity = widget.orderDetail.quantity;
 
@@ -88,7 +118,7 @@ class _EditOrderDetailState extends State<EditOrderDetail> {
                 textAlign: TextAlign.start,
               ),
             ),
-        
+
             const SizedBox(
               height: 10,
             ),
@@ -118,33 +148,12 @@ class _EditOrderDetailState extends State<EditOrderDetail> {
               ),
               onChanged: (value) => updateNote(value),
             ),
-        
-            // Expanded(
-            //   child: order.bills.isEmpty
-            //       ? const Center(child: Text('No hay cuentas'))
-            //       : ListView.builder(
-            //           shrinkWrap: true,
-            //           itemCount: order.bills.length,
-            //           itemBuilder: (context, index) {
-            //             final bill = order.bills[index];
-            //             return ListTile(
-            //               leading: CircularProgressIndicator(
-            //                 strokeWidth: 3,
-            //                 value: bill.total / order.total,
-            //                 valueColor:
-            //                     AlwaysStoppedAnimation<Color>(Colors.blue),
-            //               ),
-            //               title: Text('${bill.paymentMethod.name}'),
-            //               subtitle: Text(formatDate.format(bill.createdAt)),
-            //               trailing: Text('\$${bill.total}'),
-            //             );
-            //           }),
-            // ),
+
             const SizedBox(
               height: 10,
             ),
-            const Text('Quantity'),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              const Text('Quantity'),
               Row(
                 children: [
                   IconButton(
@@ -162,15 +171,16 @@ class _EditOrderDetailState extends State<EditOrderDetail> {
                   ),
                 ],
               ),
-              Text((orderDetail.product.price * _counter).toString()),
             ]),
-            SizedBox(
+            const Divider(
               height: 10,
+              thickness: 1,
+              color: Colors.grey,
             ),
-            Text(
-                'Quantity delivered ${orderDetail.qtyDelivered}/${orderDetail.quantity}'),
-        
+
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text(
+                  'Quantity delivered ${orderDetail.qtyDelivered}/${orderDetail.quantity}'),
               Row(
                 children: [
                   IconButton(
@@ -189,7 +199,7 @@ class _EditOrderDetailState extends State<EditOrderDetail> {
                 ],
               ),
             ]),
-        
+
             const SizedBox(
               height: 10,
             ),
@@ -198,15 +208,14 @@ class _EditOrderDetailState extends State<EditOrderDetail> {
                 child: ElevatedButton(
                   child: const Text('Save'),
                   onPressed: () {
+                    updateOrderDetail();
                     Navigator.pop(context);
                   },
                 )),
             SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () => Navigator.pop(context),
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.grey)),
                   child: const Text('Cancel'),
                 ))
             // SizedBox(

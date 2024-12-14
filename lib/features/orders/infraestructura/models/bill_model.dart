@@ -1,3 +1,4 @@
+import 'package:restaurant_app/features/auth/infraestructure/models/user_model.dart';
 import 'package:restaurant_app/features/orders/infraestructura/models/bill_detail_model.dart';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -26,6 +27,8 @@ class BillModel with _$BillModel {
     required String createdAt,
     required String updatedAt,
     required bool isActive,
+    required UserModel? createdBy,
+    UserModel? owner,
     required List<BillDetailModel> details,
   }) = _BillModel;
 
@@ -51,6 +54,8 @@ class BillModel with _$BillModel {
         updatedAt: DateTime.parse(updatedAt),
         isActive: isActive,
         details: details.map((e) => e.toEntity()).toList(),
+        createdBy: createdBy?.toEntity(),
+        owner: owner?.toEntity(),
       );
 
 }

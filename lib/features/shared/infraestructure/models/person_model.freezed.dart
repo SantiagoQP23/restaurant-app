@@ -23,9 +23,9 @@ mixin _$PersonModel {
   String get id => throw _privateConstructorUsedError;
   String get firstName => throw _privateConstructorUsedError;
   String get lastName => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
   String? get numPhone => throw _privateConstructorUsedError;
-  IdentificationModel get identification => throw _privateConstructorUsedError;
+  IdentificationModel? get identification => throw _privateConstructorUsedError;
 
   /// Serializes this PersonModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -47,11 +47,11 @@ abstract class $PersonModelCopyWith<$Res> {
       {String id,
       String firstName,
       String lastName,
-      String email,
+      String? email,
       String? numPhone,
-      IdentificationModel identification});
+      IdentificationModel? identification});
 
-  $IdentificationModelCopyWith<$Res> get identification;
+  $IdentificationModelCopyWith<$Res>? get identification;
 }
 
 /// @nodoc
@@ -72,9 +72,9 @@ class _$PersonModelCopyWithImpl<$Res, $Val extends PersonModel>
     Object? id = null,
     Object? firstName = null,
     Object? lastName = null,
-    Object? email = null,
+    Object? email = freezed,
     Object? numPhone = freezed,
-    Object? identification = null,
+    Object? identification = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -89,18 +89,18 @@ class _$PersonModelCopyWithImpl<$Res, $Val extends PersonModel>
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String,
-      email: null == email
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       numPhone: freezed == numPhone
           ? _value.numPhone
           : numPhone // ignore: cast_nullable_to_non_nullable
               as String?,
-      identification: null == identification
+      identification: freezed == identification
           ? _value.identification
           : identification // ignore: cast_nullable_to_non_nullable
-              as IdentificationModel,
+              as IdentificationModel?,
     ) as $Val);
   }
 
@@ -108,8 +108,12 @@ class _$PersonModelCopyWithImpl<$Res, $Val extends PersonModel>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $IdentificationModelCopyWith<$Res> get identification {
-    return $IdentificationModelCopyWith<$Res>(_value.identification, (value) {
+  $IdentificationModelCopyWith<$Res>? get identification {
+    if (_value.identification == null) {
+      return null;
+    }
+
+    return $IdentificationModelCopyWith<$Res>(_value.identification!, (value) {
       return _then(_value.copyWith(identification: value) as $Val);
     });
   }
@@ -127,12 +131,12 @@ abstract class _$$PersonModelImplCopyWith<$Res>
       {String id,
       String firstName,
       String lastName,
-      String email,
+      String? email,
       String? numPhone,
-      IdentificationModel identification});
+      IdentificationModel? identification});
 
   @override
-  $IdentificationModelCopyWith<$Res> get identification;
+  $IdentificationModelCopyWith<$Res>? get identification;
 }
 
 /// @nodoc
@@ -151,9 +155,9 @@ class __$$PersonModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? firstName = null,
     Object? lastName = null,
-    Object? email = null,
+    Object? email = freezed,
     Object? numPhone = freezed,
-    Object? identification = null,
+    Object? identification = freezed,
   }) {
     return _then(_$PersonModelImpl(
       id: null == id
@@ -168,18 +172,18 @@ class __$$PersonModelImplCopyWithImpl<$Res>
           ? _value.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String,
-      email: null == email
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       numPhone: freezed == numPhone
           ? _value.numPhone
           : numPhone // ignore: cast_nullable_to_non_nullable
               as String?,
-      identification: null == identification
+      identification: freezed == identification
           ? _value.identification
           : identification // ignore: cast_nullable_to_non_nullable
-              as IdentificationModel,
+              as IdentificationModel?,
     ));
   }
 }
@@ -206,11 +210,11 @@ class _$PersonModelImpl extends _PersonModel {
   @override
   final String lastName;
   @override
-  final String email;
+  final String? email;
   @override
   final String? numPhone;
   @override
-  final IdentificationModel identification;
+  final IdentificationModel? identification;
 
   @override
   String toString() {
@@ -260,9 +264,9 @@ abstract class _PersonModel extends PersonModel {
       {required final String id,
       required final String firstName,
       required final String lastName,
-      required final String email,
+      required final String? email,
       final String? numPhone,
-      required final IdentificationModel identification}) = _$PersonModelImpl;
+      required final IdentificationModel? identification}) = _$PersonModelImpl;
   const _PersonModel._() : super._();
 
   factory _PersonModel.fromJson(Map<String, dynamic> json) =
@@ -275,11 +279,11 @@ abstract class _PersonModel extends PersonModel {
   @override
   String get lastName;
   @override
-  String get email;
+  String? get email;
   @override
   String? get numPhone;
   @override
-  IdentificationModel get identification;
+  IdentificationModel? get identification;
 
   /// Create a copy of PersonModel
   /// with the given fields replaced by the non-null parameter values.

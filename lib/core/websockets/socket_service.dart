@@ -10,6 +10,9 @@ class SocketEvents {
   static const String orderUpdated = 'update-order';
   static const String orderDeleted = 'delete-order';
   static const String tableUpdated = 'update-table';
+  static const String updateOrderDetail = 'update-order-detail';
+  static const String createBill = 'createBill';
+  static const String updateBill = 'updateBill';
 }
 
 enum ServerStatus { online, offline, connecting }
